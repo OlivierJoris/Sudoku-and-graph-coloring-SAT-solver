@@ -1,2 +1,2 @@
 # INFO9015-Project1
-Sudoku solver using propositional logic
+SAT solver for coloring graph and solving sudoku
