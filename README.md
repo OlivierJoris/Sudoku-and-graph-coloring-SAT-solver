@@ -1,2 +1,2 @@
 # INFO9015-Project1
-SAT solver for coloring graph and solving sudoku
+SAT solver for coloring graphs and solving sudokus
