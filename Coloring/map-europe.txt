@@ -1,0 +1,12 @@
+Belgium Holland
+Belgium Germany
+Belgium Luxembourg
+Belgium France
+Holland Germany
+Germany Luxembourg
+Germany Austria
+Germany Switzerland
+Germany France
+Luxembourg France
+Austria Switzerland
+Switzerland France
