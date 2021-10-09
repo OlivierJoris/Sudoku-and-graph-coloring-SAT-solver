@@ -86,9 +86,24 @@ def sudoku_generic_constraints(myfile, N):
     else:
         exit("Only supports size 9 and 4")
 
-    # Here should come the constraint generation
-    # ...
+    # Each cell of the sudoku must contains stricly one number in [1, 9]
+    for line in range(1, N + 1):
+        for column in range(1, N + 1):
+            for number in range(1, 10):
+                newlit(line, column, number)    
+            newcl()
+    
+    for line in range(1, N + 1):
+        for column in range(1, N + 1):
+            propositions = []
+            for number in range(1, 10):
+                propositions.append([line, column, number])
 
+            for i in range(10):
+                for p in propositions[i+1:]:
+                    newlit(-propositions[i][0], propositions[i][1], propositions[i][2])
+                    newlit(-p[0], p[1], p[2])
+                    newcl()
 
 def sudoku_specific_constraints(myfile, sudoku):
 
@@ -156,6 +171,6 @@ sudoku_specific_constraints(myfile, sudoku)
 myfile.close()
 sys.stdout.write("cnf written in sudoku.cnf\n")
 sys.stdout.write("launching SAT solver\n")
-#sudoku = sudoku_solve("sudoku.cnf")
+sudoku = sudoku_solve("sudoku.cnf")
 sudoku_print(sys.stdout, sudoku)
 sys.stdout.write("done\n")
