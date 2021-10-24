@@ -1,0 +1,156 @@
+\documentclass[a4paper, 11pt, oneside]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{array}
+\usepackage{shortvrb}
+\usepackage{listings}
+\usepackage[fleqn]{amsmath}
+\usepackage{amsfonts}
+\usepackage{fullpage}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{alltt}
+\usepackage{indentfirst}
+\usepackage{eurosym}
+\usepackage{titlesec, blindtext, color}
+\usepackage[table,xcdraw,dvipsnames]{xcolor}
+\usepackage[unicode]{hyperref}
+\usepackage{url}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage[skip=1ex]{caption}
+
+\lstset{
+    language=bash, % Utilisation du langage C
+    commentstyle={\color{MidnightBlue}}, % Couleur des commentaires
+    frame=single, % Entoure le code d'un joli cadre
+    rulecolor=\color{black}, % Couleur de la ligne qui forme le cadre
+    stringstyle=\color{RawSienna}, % Couleur des chaines de caractères % Distance entre les numérots de lignes et le code
+    numberstyle=\tiny\color{mygray}, % Couleur des numéros de lignes
+    basicstyle=\tt\footnotesize, 
+    tabsize=3, % Largeur des tabulations par défaut
+    keywordstyle=\tt\bf\footnotesize\color{Sepia}, % Style des mots-clés
+    extendedchars=true, 
+    captionpos=b, % sets the caption-position to bottom
+    texcl=true, % Commentaires sur une ligne interprétés en Latex
+    showstringspaces=false, % Ne montre pas les espace dans les chaines de caractères
+    escapeinside={(>}{<)}, % Permet de mettre du latex entre des <( et )>.
+    inputencoding=utf8,
+    literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\`E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\definecolor{brightpink}{rgb}{1.0, 0.0, 0.5}
+
+\usepackage{titling}
+\renewcommand\maketitlehooka{\null\mbox{}\vfill}
+\renewcommand\maketitlehookd{\vfill\null}
+
+\newcommand{\ClassName}{INFO9015: Logic for Computer Science}
+\newcommand{\ProjectName}{Sudoku solving using propositional logic}
+\newcommand{\AcademicYear}{2021 - 2022}
+
+%%%% First page settings %%%%
+
+\title{\ClassName\\\vspace*{0.8cm}\ProjectName\vspace{1cm}}
+\author{Olivier Joris - 182113}
+\date{\vspace{1cm}Academic year \AcademicYear}
+
+\begin{document}
+
+%%% First page %%%
+\begin{titlingpage}
+{\let\newpage\relax\maketitle}
+\end{titlingpage}
+
+\thispagestyle{empty}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Table of contents %%%
+%\tableofcontents
+%\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Encoding to SAT}
+
+Let $c(i, j, k)$ asserting that the cell in row $i$ and in column $j$ contains the number $k$.
+Let $N$ be the size of the sudoku.
+\subsection{Individual cells}
+
+The first set of clauses indicates that each cell of the sudoku must contains at least one number in [1, N] :
+$\bigwedge_{i=1}^{N} \bigwedge_{j=1}^{N} \bigvee_{k=1}^{N} c(i, j, k)$
+
+The second set of clauses indicates that each cell can not contain more than one number in [1, N]: $\bigwedge_{i=1}^{N} \bigwedge_{j=1}^{N} \bigwedge_{k=1}^{N-1} \bigwedge_{l=k+1}^{N} \neg (c(i, j, k) \land c(i,j,l))$
+
+\subsection{Rows}
+
+The first set of clauses indicates that each number in [1, N] appears at least once in each row :
+$\bigwedge_{i=1}^{N} \bigwedge_{k=1}^{N} \bigvee_{j=1}^{N} c(i, j, k)$
+
+The second set of clauses indicates that each number in [1, N] appears at most once in each row :
+$\bigwedge_{i=1}^{N} \bigwedge_{k=1}^{N} \bigwedge_{j=1}^{N-1} \bigwedge_{l=j+1}^{N} \neg (c(i, j, k) \land c(i, l, k))$
+
+
+\subsection{Columns}
+
+The first set of clauses indicates that each number in [1, N] appears at least once in each column :
+$\bigwedge_{j=1}^{N} \bigwedge_{k=1}^{N} \bigvee_{i=1}^{N} c(i, j, k)$
+
+The second set of clauses indicates that each number in [1, N] appears at most once in each column :
+$\bigwedge_{j=1}^{N} \bigwedge_{k=1}^{N} \bigwedge_{i=1}^{N-1} \bigwedge_{l=i+1}^{N} \neg (c(i, j, k) \land c(l, j, k))$
+
+\subsection{Squares}
+
+The first set of clauses indicates that each number in [1, N] appears at least once in each square :
+$\bigwedge_{i_{offset}=1}^{\sqrt{N}} \bigwedge_{j_{offset}=1}^{\sqrt{N}} \bigwedge_{k=1}^{N} \bigvee_{i=1}^{\sqrt{N}} \bigvee_{j=1}^{\sqrt{N}} c(i_{offset} * \sqrt{N} + i, \ j_{offset} * \sqrt{N} + j, \ k)$
+
+The second set of clauses indicates that each number in [1, N] appears at most once in each square :
+$\bigwedge_{i_{offset}=1}^{\sqrt{N}} \bigwedge_{j_{offset}=1}^{\sqrt{N}} \bigwedge_{k=1}^{N} \bigwedge_{i=1}^{N} \bigwedge_{j=i+1}^{N} \neg c(i_{offset} * \sqrt{N} + (i \ mod \sqrt{N}), \ j_{offset} * \sqrt{N} + (i \ mod \sqrt{N}), \ v) \lor \neg c(i_{offset} * \sqrt{N} + (j \ mod \sqrt{N}), \ j_{offset} * \sqrt{N} + (j \ mod \sqrt{N}), \ k)$
+
+\section{Program features}
+
+The program can solve a given sudoku in a text file, solve all the sudokus contained in a directory, and generates sudoku of size 4, 9, and 16. The different execution modes are described in this section.
+
+\subsection{Solve a sudoku}
+
+To solve a sudoku of size 4, 9, or 16, the program can be launched using this command : 
+\begin{lstlisting}
+$ python3 sudokub.py 'text_file'
+\end{lstlisting}
+where \texttt{text\_file} corresponds to the text file containing the sudoku that has to be solved.
+
+\subsection{Solve all sudokus from a repository}
+
+To solve all the sudokus of size 4, 9, or 16 contained in a repository, the program can be launched using this command : 
+\begin{lstlisting}
+$ python3 sudokub.py 'repository'
+\end{lstlisting}
+where \texttt{repository} corresponds to the repository containing the sudokus that have to be solved. The solutions are \texttt{.sol} files corresponding to the inital file names created in the same repository
+
+\subsection{Generate a sudoku of a given size}
+
+To generate a sudoku of size 4, 9, or 16, the program can be launched using this command : 
+\begin{lstlisting}
+$ python3 sudokub.py -generate 'size'
+\end{lstlisting}
+where \texttt{size} corresponds to the size of the sudoku that has to be generated. The sudoku is then display on the standard output. Two executions of this command can give two different sudokus.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
